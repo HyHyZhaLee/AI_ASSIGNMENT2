@@ -59,6 +59,7 @@ class LocalSearchStrategy:
         pass
 
     def simulated_annealing_search(self, problem: Problem, schedule):
+        # TODO 3: simulated_annealing_search
         current = problem.get_initial_state()
         path = [(current.X, current.Y, problem.get_evaluation_value(current))]
         t = 1
