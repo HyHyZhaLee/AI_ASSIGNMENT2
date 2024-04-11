@@ -1,15 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
-
+import random
 class State:
     def __init__(self, X, Y):
         self.X = X
         self.Y = Y
+    def __str__(self):
+        return f"({self.X},{self.Y})"
 
 class Problem:
     def __init__(self, filename):
         self.X, self.Y, self.Z = self.load_state_space(filename)
+
 
     def load_state_space(self, filename):
         img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
@@ -42,8 +45,25 @@ class Problem:
         #TODO: return true if state = goal_state
         pass
 
-    def get_sucessors(self, state):
-        pass
+    def get_successors(self, state):
+        successors = []
+        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0),
+                      (1, 1)]  # Include diagonal directions
+        min_x, max_x = min(self.X), max(self.X)
+        min_y, max_y = min(self.Y), max(self.Y)
+
+        for dx, dy in directions:
+            newX, newY = state.X + dx, state.Y + dy
+            if min_x <= newX <= max_x and min_y <= newY <= max_y:  # Check against actual min and max values
+                successors.append(State(newX, newY))
+        return successors
+
+    def get_random_successor(self, state):
+        successors = self.get_successors(state)
+        if successors:
+            return random.choice(successors)
+        else:
+            return None
 
     def get_cost(self):
         pass
@@ -61,9 +81,13 @@ class Problem:
 if __name__ == '__main__':
     # Load pic
     problem = Problem('monalisa.jpg')
-    # Test get Z (evaluation_value)
-    state = State(0, 0)
-    Z = problem.get_evaluation_value(state)
-    print(Z)
+    initialState = State(0, 0)
+    # Test print get Z state(0,0)
+    print(problem.get_evaluation_value(initialState))
+    # Test getSuccesor
+    initialState_successor = problem.get_successors(initialState)
+    for successor in initialState_successor:
+        print(successor)
     # Plot
     problem.show()
+
