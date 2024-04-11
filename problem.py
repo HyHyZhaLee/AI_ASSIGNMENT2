@@ -2,17 +2,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 import random
+
+
 class State:
     def __init__(self, X, Y):
         self.X = X
         self.Y = Y
+
     def __str__(self):
         return f"({self.X},{self.Y})"
+
 
 class Problem:
     def __init__(self, filename):
         self.X, self.Y, self.Z = self.load_state_space(filename)
-
 
     def load_state_space(self, filename):
         img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
@@ -24,7 +27,7 @@ class Problem:
         Z = img
         return X, Y, Z
 
-    def show(self):
+    def show(self, ax=None):
         # draw state space (surface)
         X, Y = np.meshgrid(self.X, self.Y)
         Z = self.Z
@@ -42,7 +45,7 @@ class Problem:
         return self.Z[state.X][state.Y]
 
     def goal_test(self, state):
-        #TODO: return true if state = goal_state
+        # TODO: return true if state = goal_state
         pass
 
     def get_successors(self, state):
@@ -65,29 +68,40 @@ class Problem:
         else:
             return None
 
-    def get_cost(self):
-        pass
+    def get_cost(self, state1, state2):
+        return 1
 
     def heuristic_schedule(self, t):
         pass
 
     def draw_path(self, path):
-        # draw a polyline on the surface
-        # ax.plot(range(0, 50), range(0, 50), self.Z[range(0, 50), range(0, 50)], 'r-', zorder=3, linewidth=0.5)
+        X, Y = np.meshgrid(self.X, self.Y)
+        Z = self.Z
+        fig = plt.figure(figsize=(8, 6))
+        ax = fig.add_subplot(111, projection='3d')
+        ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
 
-        #TODO 1: Visualize all tuples of (x, y, z) and a draw_path(path) function to draw the path on the curved surface
-        pass
+        # draw:
+        xs = [state.X for state in path]
+        ys = [state.Y for state in path]
+        zs = [self.Z[state.Y][state.X] for state in path]
+        ax.plot(xs, ys, zs, marker='o', color='r')
+        plt.show()
+
 
 if __name__ == '__main__':
     # Load pic
     problem = Problem('monalisa.jpg')
     initialState = State(0, 0)
+
     # Test print get Z state(0,0)
+    print("Test getting z at initial state (0,0): ")
     print(problem.get_evaluation_value(initialState))
+
     # Test getSuccesor
+    print("Test getting z at initial state (0,0): ")
     initialState_successor = problem.get_successors(initialState)
     for successor in initialState_successor:
         print(successor)
     # Plot
     problem.show()
-
