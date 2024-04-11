@@ -46,7 +46,7 @@ class Problem:
         return initial_state
 
     def get_evaluation_value(self, state):
-        return self.Z[state.X][state.Y]
+        return self.Z[state.Y][state.X]
 
     def goal_test(self, state):
         # TODO: return true if state = goal_state
