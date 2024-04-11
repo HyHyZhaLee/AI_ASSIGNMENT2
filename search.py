@@ -88,6 +88,31 @@ class LocalSearchStrategy:
 
     def local_beam_search(self, problem, k):
         #TODO 4: local_beam_search
+        initial_state = problem.get_initial_state()
+        successors = problem.get_successors(initial_state)
+        
+        states = successors[:k] if len(successors) >= k else [initial_state] * k
+        
+        paths = [[(state.X, state.Y, problem.get_evaluation_value(state))] for state in states]
+
+        while True:
+            all_successors = []
+            for state in states:
+                successors = problem.get_successors(state)
+                all_successors.extend(successors)
+
+            all_successors.sort(key=lambda x: problem.get_evaluation_value(x), reverse=True)
+            
+            states = all_successors[:k]
+
+            for i, state in enumerate(states):
+                paths[i].append((state.X, state.Y, problem.get_evaluation_value(state)))
+            
+            best_state = max(states, key=lambda x: problem.get_evaluation_value(x))
+            if problem.goal_test(best_state):
+                return paths[states.index(best_state)]
+
+        return paths[0]  # If no goal state, return the path of the first beam
         pass
 
 if __name__ == "__main__":
