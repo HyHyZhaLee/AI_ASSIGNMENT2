@@ -81,11 +81,12 @@ class Problem:
         ax = fig.add_subplot(111, projection='3d')
         ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
 
-        # draw:
-        xs = [state.X for state in path]
-        ys = [state.Y for state in path]
-        zs = [self.Z[state.Y][state.X] for state in path]
-        ax.plot(xs, ys, zs, marker='o', color='r')
+        # Vẽ đường đi từ danh sách các bộ ba (x, y, z)
+        xs = [x for x, y, z in path]
+        ys = [y for x, y, z in path]
+        zs = [z for x, y, z in path]
+        ax.plot(xs, ys, zs, 'r-', zorder=3, linewidth=0.5)  # Dùng 'r-' để vẽ đường màu đỏ
+
         plt.show()
 
 
