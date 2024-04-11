@@ -46,16 +46,31 @@ class Problem:
         #TODO: return true if state = goal_state
         pass
 
-    def get_sucessors(self, state: State) -> tuple:
-        return (State(state.X-1, state.Y-1), State(state.X+1, state.Y+1))
+    def get_sucessors(self, state: State):
+        successors = []
+        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0),
+                      (1, 1)]  # Include diagonal directions
+        min_x, max_x = min(self.X), max(self.X)
+        min_y, max_y = min(self.Y), max(self.Y)
+
+        for dx, dy in directions:
+            newX, newY = state.X + dx, state.Y + dy
+            if min_x <= newX <= max_x and min_y <= newY <= max_y:  # Check against actual min and max values
+                successors.append(State(newX, newY))
+        return successors
 
     def get_random_successor(self, state: State) -> State:
-        x = random.randint(0,  len(self.X) - 1 )
-        y = random.randint(0, len(self.Y) - 1 )
-        while x == state.X and y == state.Y:
-            x = random.randint(0,  len(self.X) - 1 )
-            y = random.randint(0, len(self.Y) - 1 )
-        return State(x, y)
+        randomNumber = random.randint(0, 7)
+        directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0),
+                      (1, 1)]
+        min_x, max_x = min(self.X), max(self.X)
+        min_y, max_y = min(self.Y), max(self.Y)
+        dx, dy = directions[randomNumber]
+
+        newX, newY = state.X + dx, state.Y + dy
+        if min_x <= newX <= max_x and min_y <= newY <= max_y:
+            return State(newX, newY)
+        return self.get_random_successor(state)
 
     def get_cost(self):
         pass
@@ -89,4 +104,4 @@ class Problem:
 
     def schedule(self, t):
         # print(self.Z.size)
-        return 100 / np.log(t + 1)
+        return np.max(self.Z) * (0.9**t)

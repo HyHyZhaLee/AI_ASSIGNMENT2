@@ -9,21 +9,24 @@ class LocalSearchStrategy:
         path = [(current.X, current.Y, problem.get_evaluation_value(current))]
         t = 1
         while True:
-            # print(current)
-            T = problem.schedule(t)
-            if T > 0:
-                break
+            T = math.floor(schedule(t))
+            if T == 0:
+                path.append((current.X, current.Y, problem.get_evaluation_value(current)))
+                return path
             next = problem.get_random_successor(current)
-            deltaE = np.subtract(problem.get_evaluation_value(next), problem.get_evaluation_value(current), dtype=np.int16)
-            # print(next.X, next.Y, problem.get_evaluation_value(next) ," - ",current.X, current.Y, problem.get_evaluation_value(current))
-            # print(deltaE)
+            # print(next)
+            next_Z = problem.get_evaluation_value(next)
+            while (next.X, next.Y, next_Z) in path:
+                next = problem.get_random_successor(current)
+
+            deltaE = np.subtract(problem.get_evaluation_value(next), next_Z, dtype=np.int16)
+            
             if deltaE > 0:
+                path.append((next.X, next.Y, next_Z))
                 current = next
             else:
                 rand = random.uniform(0, 1)
-                # print(math.exp(np.divide(deltaE, T)), rand)
                 if math.exp(np.divide(deltaE, T)) > rand:
+                    path.append((next.X, next.Y, next_Z))
                     current = next
             t += 1
-
-        print(current, problem.get_evaluation_value(current))
