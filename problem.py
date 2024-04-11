@@ -104,4 +104,4 @@ class Problem:
 
     def schedule(self, t):
         # print(self.Z.size)
-        return np.max(self.Z) * (0.9**t)
+        return 100 * (0.95**t)
