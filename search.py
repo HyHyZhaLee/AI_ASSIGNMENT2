@@ -81,4 +81,7 @@ if __name__ == "__main__":
     print("Simulated Annealing result: ")
     print(simulatedAnnealing_result)
 
-    problem.draw_path(randomRestartHillClimbing_result)
+    problem.draw_path(randomRestartHillClimbing_result, "red")
+    problem.draw_path(localBeamSearch_result, "blue")
+    problem.draw_path(simulatedAnnealing_result, "black")
+    problem.show()
