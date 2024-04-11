@@ -76,8 +76,7 @@ class Problem:
         return 1
 
     def schedule(self, t, initial_temp=100, cooling_rate=0.95):
-        # print(self.Z.size)
-        return 100 * (0.95 ** t)
+        return initial_temp * (cooling_rate ** t)
 
     def draw_path(self, path, color='red'):
         if path:
