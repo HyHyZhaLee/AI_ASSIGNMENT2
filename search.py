@@ -1,5 +1,6 @@
 from problem import *
 import random
+import math
 
 class Node:
     def __init__(self, state):
@@ -57,9 +58,32 @@ class LocalSearchStrategy:
         return path
         pass
 
-    def simulated_annealing_search(self, problem, schedule):
-        #TODO 3: simulated_annealing_search
-        pass
+    def simulated_annealing_search(self, problem: Problem, schedule):
+        current = problem.get_initial_state()
+        path = [(current.X, current.Y, problem.get_evaluation_value(current))]
+        t = 1
+        while True:
+            T = math.floor(schedule(t))
+            if T == 0:
+                path.append((current.X, current.Y, problem.get_evaluation_value(current)))
+                return path
+            next = problem.get_random_successor(current)
+            # print(next)
+            next_Z = problem.get_evaluation_value(next)
+            while (next.X, next.Y, next_Z) in path:
+                next = problem.get_random_successor(current)
+
+            deltaE = np.subtract(problem.get_evaluation_value(next), next_Z, dtype=np.int16)
+
+            if deltaE > 0:
+                path.append((next.X, next.Y, next_Z))
+                current = next
+            else:
+                rand = random.uniform(0, 1)
+                if math.exp(np.divide(deltaE, T)) > rand:
+                    path.append((next.X, next.Y, next_Z))
+                    current = next
+            t += 1
 
     def local_beam_search(self, problem, k):
         #TODO 4: local_beam_search
@@ -70,7 +94,7 @@ if __name__ == "__main__":
     search = LocalSearchStrategy()
     randomRestartHillClimbing_result = search.random_restart_hill_climbing(problem, 5)
     localBeamSearch_result = search.local_beam_search(problem, 5)
-    simulatedAnnealing_result = search.simulated_annealing_search(problem, problem.heuristic_schedule)
+    simulatedAnnealing_result = search.simulated_annealing_search(problem, problem.schedule)
 
     print("Random restart hill climbing result: ")
     print(randomRestartHillClimbing_result)

@@ -38,7 +38,11 @@ class Problem:
         pass
 
     def get_initial_state(self):
-        initial_state = State(0, 0)
+        random_x = random.randint(0, max(self.X) - 1)
+        random_y = random.randint(0, max(self.Y) - 1)
+
+        # Tạo trạng thái khởi tạo với X và Y ngẫu nhiên
+        initial_state = State(random_x, random_y)
         return initial_state
 
     def get_evaluation_value(self, state):
@@ -71,16 +75,21 @@ class Problem:
     def get_cost(self, state1, state2):
         return 1
 
-    def heuristic_schedule(self, t):
-        pass
+    def schedule(self, t, initial_temp=100, cooling_rate=0.95):
+        # print(self.Z.size)
+        return 100 * (0.95 ** t)
 
     def draw_path(self, path, color='red'):
         if path:
-            xs = [x for x, y, z in path]
-            ys = [y for x, y, z in path]
-            zs = [z for x, y, z in path]
-            # Sử dụng biến color được truyền vào để đặt màu sắc cho đường đi
-            self.ax.plot(xs, ys, zs, color=color, zorder=3, linewidth=0.5)
+            X_array = []
+            Y_array = []
+            Z_array = []
+            for state in path:
+                X_array.append(state[0])
+                Y_array.append(state[1])
+                Z_array.append(state[2])
+
+            self.ax.plot(X_array, Y_array, self.Z[Y_array, X_array], color, zorder=3, linewidth=0.5)
 
 
 if __name__ == '__main__':
