@@ -16,6 +16,11 @@ class State:
 class Problem:
     def __init__(self, filename):
         self.X, self.Y, self.Z = self.load_state_space(filename)
+        X, Y = np.meshgrid(self.X, self.Y)
+        Z = self.Z
+        fig = plt.figure(figsize=(8, 6))
+        self.ax = plt.axes(projection='3d')
+        self.ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
 
     def load_state_space(self, filename):
         img = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
@@ -27,15 +32,10 @@ class Problem:
         Z = img
         return X, Y, Z
 
-    def show(self, ax=None):
+    def show(self):
         # draw state space (surface)
-        X, Y = np.meshgrid(self.X, self.Y)
-        Z = self.Z
-        fig = plt.figure(figsize=(8, 6))
-        ax = plt.axes(projection='3d')
-        # draw state space (surface)
-        ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
         plt.show()
+        pass
 
     def get_initial_state(self):
         initial_state = State(0, 0)
@@ -74,19 +74,13 @@ class Problem:
     def heuristic_schedule(self, t):
         pass
 
-    def draw_path(self, path):
-        X, Y = np.meshgrid(self.X, self.Y)
-        Z = self.Z
-        fig = plt.figure(figsize=(8, 6))
-        ax = fig.add_subplot(111, projection='3d')
-        ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap='viridis', edgecolor='none')
-
-        # draw:
-        xs = [state.X for state in path]
-        ys = [state.Y for state in path]
-        zs = [self.Z[state.Y][state.X] for state in path]
-        ax.plot(xs, ys, zs, marker='o', color='r')
-        plt.show()
+    def draw_path(self, path, color='red'):
+        if path:
+            xs = [x for x, y, z in path]
+            ys = [y for x, y, z in path]
+            zs = [z for x, y, z in path]
+            # Sử dụng biến color được truyền vào để đặt màu sắc cho đường đi
+            self.ax.plot(xs, ys, zs, color=color, zorder=3, linewidth=0.5)
 
 
 if __name__ == '__main__':
