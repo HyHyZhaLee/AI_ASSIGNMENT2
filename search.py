@@ -89,47 +89,33 @@ class LocalSearchStrategy:
     def local_beam_search(self, problem, k):
         states = [problem.get_random_state() for _ in range(k)]
         paths = {state: [(state.X, state.Y, problem.get_evaluation_value(state))] for state in states}
-    
-        iteration = 0  # Track the number of iterations
 
+        all_explored_paths = []
+
+        iteration = 0
         while True:
-            print(f"Iteration {iteration}: Current states:")  # Diagnostic print
-            for state in states:
-                print(f"State {state} with evaluation {problem.get_evaluation_value(state)}")
-        
-            all_successors = []
+            new_states = []
             for state in states:
                 successors = problem.get_successors(state)
                 for succ in successors:
-                    if succ not in paths:
-                        paths[succ] = paths[state] + [(succ.X, succ.Y, problem.get_evaluation_value(succ))]
-                    all_successors.append(succ)
-        
-            # If no successors were generated, exit the loop
-            if not all_successors:
-                print("No more successors to explore.")
+                    # Create a new path for each successor
+                    new_path = paths[state] + [(succ.X, succ.Y, problem.get_evaluation_value(succ))]
+                    if new_path not in all_explored_paths:
+                        all_explored_paths.append(new_path)
+                    paths[succ] = new_path  # Update path for successor
+                    new_states.append(succ)  # Collect all unique successors
+
+            if not new_states:  # No progress, can exit the loop
                 break
 
-            all_successors = list(set(all_successors))  # Remove duplicates
-            all_successors.sort(key=lambda x: problem.get_evaluation_value(x), reverse=True)
-            states = all_successors[:k]
+            states = list(set(new_states))  # Ensure unique states for the next iteration
 
-            # If no states have changed (no progress), exit the loop
-            if states == all_successors[:k]:
-                print("No progress in beam search; terminating.")
-                break
-        
-            iteration += 1  # Increment the iteration count
-            # Terminate after a reasonable number of iterations to prevent infinite loop
-            if iteration > 1000:  # This is an arbitrary cutoff for the example
+            iteration += 1
+            if iteration > 1000:  # Avoid infinite loops
                 print("Reached iteration limit; terminating.")
                 break
 
-        best_state = max(states, key=lambda x: problem.get_evaluation_value(x))
-        best_path = paths[best_state]
-    
-        print("Best path found:", best_path)  # Diagnostic print
-        return best_path
+        return all_explored_paths
 
 if __name__ == "__main__":
     problem = Problem("monalisa.jpg")
