@@ -87,36 +87,50 @@ class LocalSearchStrategy:
             t += 1
 
     def local_beam_search(self, problem, k):
-        # states = [problem.get_random_state() for _ in range(k)]
-        # paths = {state: [(state.X, state.Y, problem.get_evaluation_value(state))] for state in states}
-        #
-        # all_explored_paths = []
-        #
-        # iteration = 0
-        # while True:
-        #     new_states = []
-        #     for state in states:
-        #         successors = problem.get_successors(state)
-        #         for succ in successors:
-        #             # Create a new path for each successor
-        #             new_path = paths[state] + [(succ.X, succ.Y, problem.get_evaluation_value(succ))]
-        #             if new_path not in all_explored_paths:
-        #                 all_explored_paths.append(new_path)
-        #             paths[succ] = new_path  # Update path for successor
-        #             new_states.append(succ)  # Collect all unique successors
-        #
-        #     if not new_states:  # No progress, can exit the loop
-        #         break
-        #
-        #     states = list(set(new_states))  # Ensure unique states for the next iteration
-        #
-        #     iteration += 1
-        #     if iteration > 1000:  # Avoid infinite loops
-        #         print("Reached iteration limit; terminating.")
-        #         break
-        #
-        # return all_explored_paths
-        pass
+        # Start with k randomly generated states
+        current_states = [problem.get_random_state() for _ in range(k)]
+        # Initialize paths for each state
+        paths = [[(state.X, state.Y, problem.get_evaluation_value(state))] for state in current_states]
+
+        while True:
+            # List to store all successors from all k states
+            all_successors = []
+            # List to store potential paths corresponding to each successor
+            new_paths = []
+
+            # Extend each path with the successors of its last state
+            for path in paths:
+                last_state_in_path = path[-1]
+                last_state_obj = State(last_state_in_path[0], last_state_in_path[1])
+                successors = problem.get_successors(last_state_obj)
+
+                for succ in successors:
+                    all_successors.append(succ)
+                    # Extend the current path with the new successor
+                    new_path = path.copy() + [(succ.X, succ.Y, problem.get_evaluation_value(succ))]
+                    new_paths.append(new_path)
+
+            # If any successor is a goal state, return the path leading to it
+            for path in new_paths:
+                last_state_in_path = path[-1]
+                last_state_obj = State(last_state_in_path[0], last_state_in_path[1])
+                if problem.goal_test(last_state_obj):
+                    return path  # Return the path that reached the goal state
+
+            # No goal found yet, select k best successors
+            # Sort all successors by their evaluation and select top k
+            sorted_indices = sorted(range(len(all_successors)),
+                                    key=lambda i: problem.get_evaluation_value(all_successors[i]),
+                                    reverse=True)
+            paths = [new_paths[i] for i in sorted_indices[:k]]
+
+            # Implement stopping condition (e.g., a max number of iterations or no change in best states)
+            # ...
+
+        # If the function reaches this point, it means no goal state was found
+        # Return an empty list or None to indicate failure to find a goal state
+        return None
+
 
 if __name__ == "__main__":
     problem = Problem("monalisa.jpg")

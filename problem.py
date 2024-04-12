@@ -55,10 +55,17 @@ class Problem:
             raise ValueError(f"State coordinates out of bounds: X={state.X}, Y={state.Y}")
 
     def goal_test(self, state):
-        # Example: Goal is to find the highest intensity value.
-        # Modify according to your goal criteria.
-        goal_state = np.max(self.Z)
-        return (self.get_evaluation_value(state) == goal_state)
+        # Get the evaluation value of the current state
+        current_value = self.get_evaluation_value(state)
+        # Get the neighbors of the current state
+        neighbors = self.get_successors(state)
+
+        # Check if the current state has a higher value than all its neighbors
+        # If so, it's a local maximum (extrema)
+        for neighbor in neighbors:
+            if self.get_evaluation_value(neighbor) > current_value:
+                return False  # Current state is not a local maximum
+        return True  # Current state is a local maximum
 
     def get_successors(self, state):
         successors = []
@@ -99,7 +106,7 @@ class Problem:
                 Y_array.append(state[1])
                 Z_array.append(state[2])
 
-            self.ax.plot(X_array, Y_array, Z_array, color, zorder=3, linewidth=0.5)
+            self.ax.plot(X_array, Y_array, Z_array, color, zorder=3, linewidth=1)
 
 
 if __name__ == '__main__':
