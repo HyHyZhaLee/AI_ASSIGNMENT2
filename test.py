@@ -17,7 +17,8 @@ print("Simulated Annealing result: ")
 print(simulatedAnnealing_result)
 
 problem.draw_path(randomRestartHillClimbing_result, "red")
-problem.draw_path(localBeamSearch_result, "blue")
+for path in localBeamSearch_result:
+    problem.draw_path(path, "blue")
 problem.draw_path(simulatedAnnealing_result, "black")
 problem.show()
 
