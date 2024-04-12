@@ -46,7 +46,11 @@ class Problem:
         return initial_state
 
     def get_evaluation_value(self, state):
-        return self.Z[state.Y][state.X]
+        # Make sure you are accessing the Z matrix within its bounds
+        if 0 <= state.X < self.Z.shape[1] and 0 <= state.Y < self.Z.shape[0]:
+            return int(self.Z[state.Y, state.X])  # Note that it's Y first, then X, because it's row and then column
+        else:
+            raise ValueError(f"State coordinates out of bounds: X={state.X}, Y={state.Y}")
 
     def goal_test(self, state):
         # TODO: return true if state = goal_state
@@ -89,6 +93,11 @@ class Problem:
                 Z_array.append(state[2])
 
             self.ax.plot(X_array, Y_array, self.Z[Y_array, X_array], color, zorder=3, linewidth=0.5)
+
+    def get_random_state(self):
+        random_index_x = random.randint(0, self.Z.shape[1] - 1)  # Width 
+        random_index_y = random.randint(0, self.Z.shape[0] - 1)  # Height
+        return State(random_index_x, random_index_y)
 
 
 if __name__ == '__main__':
