@@ -9,16 +9,21 @@ simulatedAnnealing_result = search.simulated_annealing_search(problem, problem.s
 
 print("Random restart hill climbing result: ")
 print(randomRestartHillClimbing_result)
+print("Cost: ", problem.get_cost(randomRestartHillClimbing_result),
+      "| Last value: ", problem.get_last_value(randomRestartHillClimbing_result))
 
 print("Local beam search result: ")
 print(localBeamSearch_result)
+print("Cost: ", problem.get_cost(localBeamSearch_result),
+      "| Last value: ", problem.get_last_value(localBeamSearch_result))
 
 print("Simulated Annealing result: ")
 print(simulatedAnnealing_result)
+print("Cost: ", problem.get_cost(simulatedAnnealing_result),
+      "| Last value: ", problem.get_last_value(simulatedAnnealing_result))
 
 problem.draw_path(randomRestartHillClimbing_result, "red")
-for path in localBeamSearch_result:
-    problem.draw_path(path, "blue")
+problem.draw_path(localBeamSearch_result, "blue")
 problem.draw_path(simulatedAnnealing_result, "black")
 problem.show()
 

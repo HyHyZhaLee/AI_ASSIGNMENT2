@@ -37,24 +37,28 @@ class Problem:
         plt.show()
         pass
 
-    def get_initial_state(self):
-        random_x = random.randint(0, max(self.X) - 1)
-        random_y = random.randint(0, max(self.Y) - 1)
+    def get_random_state(self):
+        random_index_x = random.randint(0, self.Z.shape[1] - 1)  # Width
+        random_index_y = random.randint(0, self.Z.shape[0] - 1)  # Height
+        return State(random_index_x, random_index_y)
 
-        # Tạo trạng thái khởi tạo với X và Y ngẫu nhiên
-        initial_state = State(random_x, random_y)
+    def get_initial_state(self):
+        # Get random initial state
+        initial_state = self.get_random_state()
         return initial_state
 
     def get_evaluation_value(self, state):
         # Make sure you are accessing the Z matrix within its bounds
         if 0 <= state.X < self.Z.shape[1] and 0 <= state.Y < self.Z.shape[0]:
-            return int(self.Z[state.Y, state.X])  # Note that it's Y first, then X, because it's row and then column
+            return self.Z[state.Y][state.X]
         else:
             raise ValueError(f"State coordinates out of bounds: X={state.X}, Y={state.Y}")
 
     def goal_test(self, state):
-        # TODO: return true if state = goal_state
-        pass
+        # Example: Goal is to find the highest intensity value.
+        # Modify according to your goal criteria.
+        goal_state = np.max(self.Z)
+        return (self.get_evaluation_value(state) == goal_state)
 
     def get_successors(self, state):
         successors = []
@@ -76,8 +80,11 @@ class Problem:
         else:
             return None
 
-    def get_cost(self, state1, state2):
-        return 1
+    def get_cost(self, path):
+        if path: return len(path)
+        return 0
+    def get_last_value(self, path):
+        if path: return path[len(path)-1][2]
 
     def schedule(self, t, initial_temp=100, cooling_rate=0.95):
         return initial_temp * (cooling_rate ** t)
@@ -92,12 +99,7 @@ class Problem:
                 Y_array.append(state[1])
                 Z_array.append(state[2])
 
-            self.ax.plot(X_array, Y_array, self.Z[Y_array, X_array], color, zorder=3, linewidth=0.5)
-
-    def get_random_state(self):
-        random_index_x = random.randint(0, self.Z.shape[1] - 1)  # Width 
-        random_index_y = random.randint(0, self.Z.shape[0] - 1)  # Height
-        return State(random_index_x, random_index_y)
+            self.ax.plot(X_array, Y_array, Z_array, color, zorder=3, linewidth=0.5)
 
 
 if __name__ == '__main__':
@@ -108,7 +110,6 @@ if __name__ == '__main__':
     # Test print get Z state(0,0)
     print("Test getting z at initial state (0,0): ")
     print(problem.get_evaluation_value(initialState))
-
     # Test getSuccesor
     print("Test getting z at initial state (0,0): ")
     initialState_successor = problem.get_successors(initialState)

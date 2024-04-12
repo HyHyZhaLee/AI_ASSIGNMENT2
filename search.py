@@ -87,35 +87,36 @@ class LocalSearchStrategy:
             t += 1
 
     def local_beam_search(self, problem, k):
-        states = [problem.get_random_state() for _ in range(k)]
-        paths = {state: [(state.X, state.Y, problem.get_evaluation_value(state))] for state in states}
-
-        all_explored_paths = []
-
-        iteration = 0
-        while True:
-            new_states = []
-            for state in states:
-                successors = problem.get_successors(state)
-                for succ in successors:
-                    # Create a new path for each successor
-                    new_path = paths[state] + [(succ.X, succ.Y, problem.get_evaluation_value(succ))]
-                    if new_path not in all_explored_paths:
-                        all_explored_paths.append(new_path)
-                    paths[succ] = new_path  # Update path for successor
-                    new_states.append(succ)  # Collect all unique successors
-
-            if not new_states:  # No progress, can exit the loop
-                break
-
-            states = list(set(new_states))  # Ensure unique states for the next iteration
-
-            iteration += 1
-            if iteration > 1000:  # Avoid infinite loops
-                print("Reached iteration limit; terminating.")
-                break
-
-        return all_explored_paths
+        # states = [problem.get_random_state() for _ in range(k)]
+        # paths = {state: [(state.X, state.Y, problem.get_evaluation_value(state))] for state in states}
+        #
+        # all_explored_paths = []
+        #
+        # iteration = 0
+        # while True:
+        #     new_states = []
+        #     for state in states:
+        #         successors = problem.get_successors(state)
+        #         for succ in successors:
+        #             # Create a new path for each successor
+        #             new_path = paths[state] + [(succ.X, succ.Y, problem.get_evaluation_value(succ))]
+        #             if new_path not in all_explored_paths:
+        #                 all_explored_paths.append(new_path)
+        #             paths[succ] = new_path  # Update path for successor
+        #             new_states.append(succ)  # Collect all unique successors
+        #
+        #     if not new_states:  # No progress, can exit the loop
+        #         break
+        #
+        #     states = list(set(new_states))  # Ensure unique states for the next iteration
+        #
+        #     iteration += 1
+        #     if iteration > 1000:  # Avoid infinite loops
+        #         print("Reached iteration limit; terminating.")
+        #         break
+        #
+        # return all_explored_paths
+        pass
 
 if __name__ == "__main__":
     problem = Problem("monalisa.jpg")
