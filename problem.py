@@ -59,18 +59,18 @@ class Problem:
         current_value = self.get_evaluation_value(state)
         # Get the neighbors of the current state
         neighbors = self.get_successors(state)
-        best_neighbor = max(neighbors, key=lambda x: self.get_evaluation_value(x))
-        best_neighbors_Z = self.get_evaluation_value(best_neighbor)
-        if best_neighbors_Z <= current_value:
-            return None
-        else:
-            return best_neighbor
+        #best_neighbor = max(neighbors, key=lambda x: self.get_evaluation_value(x))
+        #best_neighbors_Z = self.get_evaluation_value(best_neighbor)
+        #if best_neighbors_Z <= current_value:
+            #return None
+        #else:
+            #return best_neighbor
         # Check if the current state has a higher value than all its neighbors
         # If so, it's a local maximum (extrema)
-        # for neighbor in neighbors:
-        #    if self.get_evaluation_value(neighbor) > current_value:
-        #        return False  # Current state is not a local maximum
-        # return True  # Current state is a local maximum
+        for neighbor in neighbors:
+            if self.get_evaluation_value(neighbor) > current_value:
+                return False  # Current state is not a local maximum
+        return True  # Current state is a local maximum
 
     def get_successors(self, state):
         successors = []

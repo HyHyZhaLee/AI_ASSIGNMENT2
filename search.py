@@ -30,26 +30,21 @@ class LocalSearchStrategy:
 
         for _ in range(num_trial):
             current_state = problem.get_initial_state()
-            # searchSpace.remove(current_state)
             current_Z = problem.get_evaluation_value(current_state)
             head = Node(current_state)
             current_path = head
 
             while True:
-                best_neighbor = problem.goal_test(current_state)
-                if best_neighbor == None:
-                    break
-
-                #neighbors = problem.get_successors(current_state)
-                #best_neighbor = max(neighbors, key=lambda x: problem.get_evaluation_value(x))
-                #best_neighbors_Z = problem.get_evaluation_value(best_neighbor)
+                neighbors = problem.get_successors(current_state)
+                best_neighbor = max(neighbors, key=lambda x: problem.get_evaluation_value(x))
+                best_neighbors_Z = problem.get_evaluation_value(best_neighbor)
                 best_Node = Node(best_neighbor)
 
-                #if best_neighbors_Z <= current_Z:
-                    #break
+                if best_neighbors_Z <= current_Z:
+                    break
 
                 current_state = best_neighbor
-                current_Z = problem.get_evaluation_value(best_neighbor)
+                current_Z = best_neighbors_Z
                 current_path.setNext(best_Node)
                 current_path = best_Node
 
