@@ -24,28 +24,32 @@ class Node:
 class LocalSearchStrategy:
     def random_restart_hill_climbing(self, problem, num_trial):
         # TODO 2: random_restart_hill_climbing
-        searchSpace = problem.get_successors(problem.get_initial_state())
         best_state = None
         best_Z = -1
         best_path = None
 
         for _ in range(num_trial):
-            current_state = random.choice(searchSpace)
+            current_state = problem.get_initial_state()
             # searchSpace.remove(current_state)
             current_Z = problem.get_evaluation_value(current_state)
             head = Node(current_state)
             current_path = head
 
             while True:
-                neighbors = problem.get_successors(current_state)
-                best_neighbor = max(neighbors, key=lambda x: problem.get_evaluation_value(x))
-                best_neighbors_Z = problem.get_evaluation_value(best_neighbor)
+                best_neighbor = problem.goal_test(current_state)
+                if best_neighbor == None:
+                    break
+
+                #neighbors = problem.get_successors(current_state)
+                #best_neighbor = max(neighbors, key=lambda x: problem.get_evaluation_value(x))
+                #best_neighbors_Z = problem.get_evaluation_value(best_neighbor)
                 best_Node = Node(best_neighbor)
 
-                if best_neighbors_Z <= current_Z:
-                    break
+                #if best_neighbors_Z <= current_Z:
+                    #break
+
                 current_state = best_neighbor
-                current_Z = best_neighbors_Z
+                current_Z = problem.get_evaluation_value(best_neighbor)
                 current_path.setNext(best_Node)
                 current_path = best_Node
 
@@ -56,7 +60,6 @@ class LocalSearchStrategy:
 
         path = [(s.X, s.Y, problem.get_evaluation_value(s)) for s in best_path.getPath()]
         return path
-        pass
 
     def simulated_annealing_search(self, problem: Problem, schedule):
         # TODO 3: simulated_annealing_search
