@@ -65,7 +65,7 @@ class LocalSearchStrategy:
         # TODO 3: simulated_annealing_search
         current = problem.get_initial_state()
         path = [(current.X, current.Y, problem.get_evaluation_value(current))]
-        t = 1
+        t = 0
         while True:
             T = math.floor(schedule(t))
             if T == 0:
@@ -83,8 +83,9 @@ class LocalSearchStrategy:
                 path.append((next.X, next.Y, next_Z))
                 current = next
             else:
-                rand = random.uniform(0, 1)
-                if math.exp(np.divide(deltaE, T)) > rand:
+                # rand = random.uniform(0, 1)
+                # print((-1)*deltaE/T)
+                if math.exp((-1) * deltaE / T) > random.uniform(0, 1):
                     path.append((next.X, next.Y, next_Z))
                     current = next
             t += 1
