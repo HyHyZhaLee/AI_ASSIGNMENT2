@@ -46,7 +46,7 @@ class Problem:
         #TODO: return true if state = goal_state
         pass
 
-    def get_sucessors(self, state: State):
+    def get_successors(self, state):
         successors = []
         directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0),
                       (1, 1)]  # Include diagonal directions
@@ -103,5 +103,5 @@ class Problem:
         plt.show()
 
     def schedule(self, t):
-        # print(self.Z.size)
-        return 100 * (0.95**t)
+        # print(np.max(self.Z))
+        return np.max(self.Z) * (0.95**t)
